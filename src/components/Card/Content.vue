@@ -7,11 +7,7 @@
       @click.stop="toggleStamp(n - 1)"
     >
       <p v-if="!stamped[n - 1]">{{ n }}</p>
-      <i
-        v-else
-        class="fa-solid fa-certificate stamp-icon"
-        aria-hidden="true"
-      ></i>
+      <i v-else class="fa-solid fa-egg stamp-icon" aria-hidden="true"></i>
     </div>
   </div>
 </template>
@@ -41,8 +37,6 @@ function toggleStamp(idx: number) {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #90caf9;
-  border: 2px dashed #85aed8;
   box-shadow: 0 1px 4px #1976d233;
   display: flex;
   align-items: center;
@@ -54,15 +48,15 @@ function toggleStamp(idx: number) {
   transition: background 0.2s;
 }
 .circle:hover {
-  background: #64b5f6;
+  background: #9fd0f8;
 }
 .circle p {
   margin: 0;
-  color: #035bb4cc;
+  color: #b1d8ffcc;
 }
 .stamp-icon {
-  color: #e53935;
-  font-size: 1.5rem;
+  color: #a9e9e3;
+  font-size: 2rem; /* 放大 icon */
   filter: drop-shadow(0 2px 4px #0003);
   /* 讓印章有點浮起的感覺 */
   pointer-events: none;
