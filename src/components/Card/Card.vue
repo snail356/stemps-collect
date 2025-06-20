@@ -26,31 +26,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const flipped = ref(false);
-const cardStyle = ref({});
 const isHovering = ref(false);
 const enableHoverEffect = ref(true);
+const hoverRotate = ref({ x: 0, y: 0 });
+const isFlipping = ref(false);
 
 function flipLeft() {
+  isFlipping.value = true;
   flipped.value = false;
+  setTimeout(() => {
+    isFlipping.value = false;
+  }, 500); // 與 transition 時間一致
 }
 function flipRight() {
+  isFlipping.value = true;
   flipped.value = true;
+  setTimeout(() => {
+    isFlipping.value = false;
+  }, 500);
 }
 
 function onMouseEnter() {
-  if (!enableHoverEffect.value) return;
+  if (!enableHoverEffect.value || isFlipping.value) return;
   isHovering.value = false;
-  cardStyle.value = {
-    transform: `perspective(1000px) rotateY(${
-      flipped.value ? 180 : 0
-    }deg) rotateX(0deg) rotateY(0deg)`,
-    transition: "transform 0.5s cubic-bezier(0.77,0,0.175,1), box-shadow 0.3s",
-  };
+  hoverRotate.value = { x: 0, y: 0 };
 }
 function onMouseMove(e: MouseEvent) {
-  if (!enableHoverEffect.value) return;
+  if (!enableHoverEffect.value || isFlipping.value) return;
   if (!isHovering.value) isHovering.value = true;
   const container = e.currentTarget as HTMLElement;
   const rect = container.getBoundingClientRect();
@@ -58,25 +62,32 @@ function onMouseMove(e: MouseEvent) {
   const y = e.clientY - rect.top;
   const centerX = rect.width / 2;
   const centerY = rect.height / 2;
-  const rotateX = ((y - centerY) / centerY) * 3;
-  const rotateY = ((x - centerX) / centerX) * -3;
-  cardStyle.value = {
-    transform: `perspective(1000px) rotateY(${
-      flipped.value ? 180 : 0
-    }deg) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-    transition: "none",
+  hoverRotate.value = {
+    x: ((y - centerY) / centerY) * 3,
+    y: ((x - centerX) / centerX) * -3,
   };
 }
 function onMouseLeave() {
-  if (!enableHoverEffect.value) return;
+  if (!enableHoverEffect.value || isFlipping.value) return;
   isHovering.value = false;
-  cardStyle.value = {
-    transform: `perspective(1000px) rotateY(${
-      flipped.value ? 180 : 0
-    }deg) rotateX(0deg) rotateY(0deg)`,
-    transition: "transform 0.5s cubic-bezier(0.77,0,0.175,1), box-shadow 0.3s",
-  };
+  hoverRotate.value = { x: 0, y: 0 };
 }
+
+const cardStyle = computed(() => {
+  const rotateY = flipped.value ? 180 : 0;
+  // 翻轉時不套用 hover 角度
+  const rotateX =
+    enableHoverEffect.value && !isFlipping.value ? hoverRotate.value.x : 0;
+  const hoverY =
+    enableHoverEffect.value && !isFlipping.value ? hoverRotate.value.y : 0;
+  return {
+    transform: `perspective(1000px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateY(${hoverY}deg)`,
+    transition:
+      isHovering.value && !isFlipping.value
+        ? "none"
+        : "transform 0.5s cubic-bezier(0.77,0,0.175,1), box-shadow 0.3s",
+  };
+});
 </script>
 
 <style scoped>
@@ -151,10 +162,6 @@ function onMouseLeave() {
   transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), box-shadow 0.3s;
   transform-style: preserve-3d;
   position: relative;
-  pointer-events: none;
-}
-.card.flipped {
-  transform: rotateY(180deg);
 }
 .card-face {
   position: absolute;
