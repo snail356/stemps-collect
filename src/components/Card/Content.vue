@@ -7,13 +7,23 @@
       @click.stop="toggleStamp(n - 1)"
     >
       <p v-if="!stamped[n - 1]">{{ n }}</p>
-      <i v-else class="fa-solid fa-egg stamp-icon" aria-hidden="true"></i>
+      <Icon
+        v-else
+        :iconClass="stempBoxStore.selectedIcon"
+        color="#1976d2"
+        size="2rem"
+        class="my-extra-class"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useStempBoxStore } from "@/stores/stempBoxStore";
+import Icon from "@/components/common/Icon.vue";
+const stempBoxStore = useStempBoxStore();
+
 const stamped = ref(Array(30).fill(false));
 function toggleStamp(idx: number) {
   stamped.value[idx] = !stamped.value[idx];

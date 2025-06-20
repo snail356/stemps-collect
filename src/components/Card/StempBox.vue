@@ -1,15 +1,15 @@
 <template>
   <div class="stemp-box">
     <div
-      v-for="(icon, idx) in icons"
+      v-for="icon in stempBoxStore.icons"
       :key="icon"
       class="icon-item"
-      :class="{ selected: selectedIdx === idx }"
-      @click="selectIcon(idx)"
+      :class="{ selected: stempBoxStore.selectedIcon === icon }"
+      @click="stempBoxStore.setSelectedIcon(icon)"
     >
       <Icon
         :iconClass="icon"
-        :color="selectedIdx === idx ? '#1976d2' : '#888'"
+        :color="stempBoxStore.selectedIcon === icon ? '#1976d2' : '#888'"
         size="1.6rem"
       />
     </div>
@@ -17,14 +17,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { useStempBoxStore } from "@/stores/stempBoxStore";
 import Icon from "@/components/common/Icon.vue";
-const icons = ["fa-solid fa-star", "fa-solid fa-heart", "fa-solid fa-lemon"];
-const selectedIdx = ref(0);
 
-function selectIcon(idx: number) {
-  selectedIdx.value = idx;
-}
+const stempBoxStore = useStempBoxStore();
 </script>
 
 <style scoped>
@@ -55,6 +51,6 @@ function selectIcon(idx: number) {
   background: #1976d222;
 }
 .icon-item:hover {
-  background: #e3f2fd;
+  background: #cf7917;
 }
 </style>
