@@ -1,13 +1,9 @@
 <template>
-  <Card>
-    <template #front> 這是卡片正面 </template>
-    <template #back> 這是卡片背面 </template>
-  </Card>
+  <CardIndex />
 </template>
 
 <script setup lang="ts">
-import NotebookTabs from "./components/NotebookTabs.vue";
-import Card from "./components/Card/index.vue";
+import CardIndex from "./components/CardIndex.vue";
 </script>
 
 <style>
